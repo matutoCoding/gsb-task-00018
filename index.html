@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快递员分片调度板</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="title">
+    <h1>快递员分片调度板</h1>
+    <p>三个快递员 · 早晚班分池独立划片 · 村子 / 路况 / 件量 / 班车时间同屏对照</p>
+  </div>
+  <div class="window-box">
+    <label>派送时间窗口（每班）</label>
+    <div class="window-inputs">
+      <input type="time" id="winStart" step="300">
+      <span>—</span>
+      <input type="time" id="winEnd" step="300">
+      <b id="winMinutes"></b>
+    </div>
+    <div class="presets">
+      <button data-w="180">3小时</button>
+      <button data-w="240">4小时</button>
+      <button data-w="270">4.5小时</button>
+      <button data-w="300">5小时</button>
+    </div>
+  </div>
+</header>
+
+<div class="planbar">
+  <div id="planTabs" class="plan-tabs"></div>
+  <div class="plan-actions">
+    <button id="btnRepart" class="primary">稳片重划</button>
+    <button id="btnBalance">全自动均衡</button>
+    <button id="btnBaseline">存为对比基线</button>
+    <button id="btnUndo">撤销</button>
+    <button id="btnCompare">方案并排比</button>
+    <button id="btnReset" class="ghost">恢复示例</button>
+  </div>
+</div>
+
+<div id="busBanner" class="banner hidden"></div>
+
+<main class="board">
+  <section class="col-villages">
+    <div class="panel-head">
+      <h2>村子分片池</h2>
+      <p class="hint">早班村与晚班村分开登记、分开划片，互不相混。点卡片上的 甲/乙/丙 分村，统计实时更新。</p>
+    </div>
+    <div id="poolEarly" class="pool"></div>
+    <div id="poolLate" class="pool"></div>
+    <div class="panel-head registry-head">
+      <h2>村子登记</h2>
+      <button id="btnAddVillage">+ 新增村子</button>
+    </div>
+    <div class="table-wrap">
+      <table id="registryTable">
+        <thead>
+          <tr>
+            <th>村子</th><th>路况</th><th>往返(分)</th><th>日均件量</th>
+            <th>班车</th><th>到站时间</th><th>操作</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <aside class="col-couriers">
+    <div class="panel-head"><h2>快递员负荷</h2>
+      <p class="hint">请假后其片区自动拆给别人，变重的人用红色标出。</p>
+    </div>
+    <div id="courierCards"></div>
+    <div class="panel-head"><h2>变动记录</h2></div>
+    <ul id="changeLog" class="changelog"></ul>
+  </aside>
+</main>
+
+<div id="compareOverlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="overlay-head">
+      <h2>几套划法并排比</h2>
+      <div>
+        <button id="btnCloseCompare" class="ghost">关闭</button>
+      </div>
+    </div>
+    <p class="hint">摆事实不做裁判：每班时长、件量、超时和极差都列出来，公不公平由人判。</p>
+    <div id="compareTable"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
