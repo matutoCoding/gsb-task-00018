@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快递分片 · 镇村派送分区</title>
+<link rel="stylesheet" href="app/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">📦</span>
+    <div>
+      <h1>快递分片</h1>
+      <p class="sub">十几个村 · 三个快递员 · 早晚班车分开分</p>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="data" class="tab active">① 村子与路况</button>
+    <button data-tab="plan" class="tab">② 分片调度</button>
+    <button data-tab="compare" class="tab">③ 方案对比</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ ① 数据维护 ============ -->
+  <section id="tab-data" class="panel active">
+    <div class="toolbar">
+      <div class="window-setting">
+        <label>派送时间窗口：</label>
+        <input type="number" id="windowMinutes" min="60" max="720" step="15">
+        <span>分钟（件到镇上起算）</span>
+        <button class="btn small ghost" id="applyWindow">改窗口并重划</button>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn" id="addVillageBtn">＋ 新增村子</button>
+      <button class="btn ghost" id="resetDataBtn">恢复示例数据</button>
+    </div>
+    <div id="windowNotice" class="notice hidden"></div>
+
+    <div class="table-wrap">
+      <table class="vtable" id="villageTable">
+        <thead>
+          <tr>
+            <th>村子</th>
+            <th>路况</th>
+            <th>往返时间(分)</th>
+            <th>日均件量</th>
+            <th>班车批次 <span class="tip" title="早班车上午到镇，晚班车下午到镇；晚到村单独安排，不能和早班混着分">ⓘ</span></th>
+            <th>班车到镇</th>
+            <th class="nosort">操作</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr class="sumrow">
+            <td colspan="3">合计</td>
+            <td id="sumParcels">0</td>
+            <td id="sumBus"></td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <h3 class="block-title">快递员</h3>
+    <div class="couriers" id="courierList"></div>
+
+    <div class="legend-note">
+      <strong>分片规则：</strong>晚班车到镇的村单独安排，只能分给同是跑晚班片的人；<b>早 / 晚两批绝不混分</b>。
+    </div>
+  </section>
+
+  <!-- ============ ② 分片调度 ============ -->
+  <section id="tab-plan" class="panel">
+    <div class="toolbar wrap">
+      <div class="plan-picker">
+        <label>当前方案：</label>
+        <select id="planSelect"></select>
+        <button class="btn small" id="copyPlanBtn" title="复制当前方案再微调">复制一套</button>
+        <button class="btn small danger ghost" id="delPlanBtn">删除</button>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn ghost" id="busBatchBtn">批量改班车…</button>
+      <button class="btn warn" id="leaveBtn">🙋 有人请假</button>
+      <button class="btn primary" id="autoBtn">⚖️ 自动均衡分片</button>
+    </div>
+    <div id="planNotice" class="notice hidden"></div>
+
+    <div class="mode-row" id="modeRow"></div>
+
+    <div class="zones" id="zones"></div>
+
+    <div class="unassigned" id="unassigned"></div>
+  </section>
+
+  <!-- ============ ③ 方案对比 ============ -->
+  <section id="tab-compare" class="panel">
+    <p class="hint">几套划法并排摆，活儿重不重、公不公平由人判。最忙的人标红，最闲的人标绿。</p>
+    <div id="compareGrid" class="compare-grid"></div>
+    <div class="fairness" id="fairnessTable"></div>
+  </section>
+</main>
+
+<!-- 弹窗 -->
+<div class="modal-mask hidden" id="modalMask">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script src="app/data.js"></script>
+<script src="app/app.js"></script>
+</body>
+</html>
